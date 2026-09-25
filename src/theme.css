@@ -1,0 +1,82 @@
+:root {
+  --bg: #111418;
+  --surface: #1b2027;
+  --surface-2: #252b34;
+  --text: #e8ecf1;
+  --muted: #8b95a3;
+  --accent: #4f9cf9;
+  --good: #3ecf8e;
+  --warn: #f5a524;
+  --bad: #f25f5c;
+  --radius: 14px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 17px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app { min-height: 100dvh; display: flex; flex-direction: column; }
+
+.content {
+  flex: 1;
+  padding: 16px 16px calc(88px + env(safe-area-inset-bottom));
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+h1 { font-size: 1.6rem; margin: 8px 0 4px; }
+h2 { font-size: 1.1rem; margin: 0 0 8px; }
+ul { margin: 0; padding-left: 20px; }
+li { margin: 4px 0; }
+
+.muted { color: var(--muted); }
+
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin: 12px 0;
+}
+
+.tag {
+  font-size: 0.75rem;
+  background: var(--surface-2);
+  color: var(--warn);
+  padding: 2px 8px;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  cursor: pointer;
+}
+
+.tabbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  background: var(--surface);
+  border-top: 1px solid var(--surface-2);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.tabbar button {
+  flex: 1;
+  background: none;
+  padding: 16px 4px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  min-height: 56px;
+}
+.tabbar button.active { color: var(--accent); font-weight: 600; }
