@@ -199,4 +199,15 @@ Alle spørsmål er besvart. Neste steg er milepæl 1.
   slettes (historikk peker på dem). Aldri eksportert → påminnelse når første økt er > 14 dager
   gammel. Skjemafelt har ≥ 16 px skrift så iPhone ikke zoomer.
 
-**Neste:** milepæl 7 – README (kjøre lokalt, legge ut på GitHub Pages, installere på iPhone).
+### Milepæl 7 – ferdig (2026-09-25)
+- README: kjøre lokalt, teste på iPhone mot PC, legge ut på GitHub Pages, installere på iPhone, backup.
+- `.github/workflows/deploy.yml`: test + build + deploy til GitHub Pages ved push til `main`.
+- **Personvern før publisering (offentlig repo):** personlige tall (vekt, målvekt, startdato) er fjernet
+  fra SPEC.md, og standardinnstillingene er 70/75 kg – brukeren setter sine egne i Innst. (lagres kun
+  på telefonen). Hele git-historikken er skrevet om med GitHubs anonyme noreply-adresse
+  (`292598486+henrikstratveit-source@users.noreply.github.com`), også satt som repoets `user.email`.
+- Lokalt ligger fortsatt `refs/original/` og greina `backup-før-omskriving` med gammel historikk.
+  Push bare `main` (aldri `git push --all`), eller slett dem med
+  `git update-ref -d refs/original/refs/heads/main` og `git branch -D backup-før-omskriving`.
+- GitHub-konto: `henrikstratveit-source`. Repo: `treningsapp`. App-URL:
+  `https://henrikstratveit-source.github.io/treningsapp/`.
