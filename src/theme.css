@@ -223,6 +223,48 @@ p { margin: 6px 0; }
 .table .right { text-align: right; }
 .table th { text-align: left; font-size: 0.75rem; font-weight: 500; color: var(--muted); padding: 4px; }
 
+/* Skjemaer */
+.form { display: flex; flex-direction: column; gap: 10px; }
+.form label { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; color: var(--muted); }
+.form label.check { flex-direction: row; color: var(--text); }
+.form-row { display: flex; gap: 8px; align-items: flex-end; }
+.form-row > * { min-width: 0; }
+.input {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 0;
+  border-radius: 10px;
+  padding: 12px;
+  font: inherit;
+  font-size: 1rem; /* ≥ 16px, ellers zoomer iOS inn */
+  width: 100%;
+}
+.form .select { margin: 0; font-size: 1rem; }
+.chips .chip { background: var(--surface-2); }
+.chips .chip.on { background: var(--accent); }
+.chips .chip.half { background: #1e3553; }
+.mini { flex: 1; }
+.mini .input { padding: 10px 8px; text-align: center; }
+.mini-select { width: auto; padding: 6px 10px; font-size: 1rem; }
+.slot-edit { border-top: 1px solid var(--surface-2); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.chip.wide { flex: none; padding: 6px 12px; font-weight: 500; font-size: 0.85rem; }
+.chip.half { background: #1e3553; color: var(--text); }
+.list { display: flex; flex-direction: column; }
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  text-align: left;
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--surface-2);
+  min-height: 48px;
+}
+.form .stepper-value { background: var(--bg); }
+.form .btn.step { background: var(--surface-2); }
+
 /* Statistikk */
 .sets-table td:first-child { width: 42%; }
 .sets-table tr.prio td:first-child { color: var(--accent); font-weight: 600; }

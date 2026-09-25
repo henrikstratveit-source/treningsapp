@@ -10,6 +10,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: { globPatterns: ['**/*.{js,css,html,png,svg}'] },
       manifest: {
         name: 'Treningsapp',
         short_name: 'Trening',
@@ -18,7 +19,11 @@ export default defineConfig({
         background_color: '#111418',
         theme_color: '#111418',
         start_url: '.',
-        icons: [],
+        icons: [
+          { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
       },
     }),
   ],

@@ -1,8 +1,10 @@
 // Skriveoperasjoner mot databasen. Alt lagres fortløpende.
 import { localDate } from '../domain/dates'
-import type { ProgramSession, SetEntry } from '../domain/types'
+import type { Exercise, ExerciseType, Program, ProgramSession, SetEntry, Settings } from '../domain/types'
 import { buildPlan } from '../domain/workout'
 import { db } from './db'
+import { seedExercises } from './seed/exercises'
+import { seedPrograms } from './seed/programs'
 
 // randomUUID finnes bare i sikre kontekster (https/localhost), ikke på http://192.168…
 export const newId = () =>
@@ -89,6 +91,49 @@ export async function clearRest() {
 
 export async function skipBonus(weekMonday: string) {
   await db.settings.update('settings', { bonusSkippedWeek: weekMonday })
+}
+
+export async function updateSettings(patch: Partial<Settings>) {
+  await db.settings.update('settings', patch)
+}
+
+/**
+ * Global pausetid for en øvelsestype. Øvelser som hadde den gamle globale verdien
+ * følger med; øvelser med egen pausetid beholder sin.
+ */
+export async function setGlobalRest(type: ExerciseType, seconds: number) {
+  const s = await db.settings.get('settings')
+  if (!s) return
+  const key = type === 'flerledd' ? 'restCompound' : 'restIsolation'
+  const old = s[key]
+  await db.transaction('rw', db.exercises, db.settings, async () => {
+    await db.exercises
+      .filter((e) => e.type === type && e.rest === old)
+      .modify((e) => {
+        e.rest = seconds
+      })
+    await db.settings.update('settings', { [key]: seconds })
+  })
+}
+
+export async function saveExercise(e: Exercise) {
+  await db.exercises.put(e)
+}
+
+export async function saveProgram(p: Program) {
+  await db.programs.put(p)
+}
+
+export async function deleteProgram(id: string) {
+  await db.programs.delete(id)
+}
+
+/** Tilbakestill standardøvelser og -programmer. Egne øvelser/programmer og all historikk beholdes. */
+export async function resetDefaults() {
+  await db.transaction('rw', db.exercises, db.programs, async () => {
+    await db.exercises.bulkPut(seedExercises)
+    await db.programs.bulkPut(seedPrograms)
+  })
 }
 
 /** Én vekt per dag; ny registrering samme dag overskriver (SPEC 10). */

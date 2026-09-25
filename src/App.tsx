@@ -4,6 +4,7 @@ import { db } from './data/db'
 import { RestTimer } from './ui/components/RestTimer'
 import { Bodyweight } from './ui/screens/Bodyweight'
 import { History } from './ui/screens/History'
+import { Settings } from './ui/screens/Settings'
 import { Stats } from './ui/screens/Stats'
 import { Home } from './ui/screens/Home'
 import { Summary } from './ui/screens/Summary'
@@ -43,7 +44,7 @@ export default function App() {
   } else if (tab === 'statistikk') {
     content = <Stats />
   } else {
-    content = <p className="muted">Kommer i en senere milepæl.</p>
+    content = <Settings />
   }
 
   return (

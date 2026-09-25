@@ -1,9 +1,10 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useState } from 'react'
-import { localDate, mondayOf } from '../../domain/dates'
+import { daysBetween, localDate, mondayOf } from '../../domain/dates'
 import { isCompleted, nextSession } from '../../domain/rotation'
 import type { ProgramSession } from '../../domain/types'
 import { MSG_WEIGHT_STALLED, weightStalled } from '../../domain/bodyweight'
+import { daysSinceExport } from '../../data/backup'
 import { db } from '../../data/db'
 import { skipBonus, startWorkout } from '../../data/repo'
 import { BodyweightQuick } from '../components/BodyweightQuick'
@@ -30,6 +31,16 @@ export function Home({ onOpenWorkout }: { onOpenWorkout: (id: string) => void })
   const next = nextSession({ program, workouts, today, bonusSkippedWeek: settings.bonusSkippedWeek })
   const sessionName = (programId: string, sessionId: string) =>
     programs.find((p) => p.id === programId)?.sessions.find((s) => s.id === sessionId)?.name ?? sessionId
+  // Aldri eksportert: regn fra første økt.
+  const since = settings.lastExport
+    ? daysSinceExport(settings.lastExport)
+    : settings.firstWorkoutDate && daysBetween(settings.firstWorkoutDate, today)
+  const exportReminder =
+    since && since > 14
+      ? settings.lastExport
+        ? `Det er ${since} dager siden siste backup. Eksporter under Innst.`
+        : 'Du har ikke tatt backup ennå. Eksporter under Innst.'
+      : null
   const thisWeek = workouts
     .filter((w) => isCompleted(w) && mondayOf(localDate(w.start)) === week)
     .sort((a, b) => a.start.localeCompare(b.start))
@@ -43,6 +54,7 @@ export function Home({ onOpenWorkout }: { onOpenWorkout: (id: string) => void })
       <h1>Trening</h1>
       <p className="muted small">{program.name}</p>
       {weightStalled(bodyweight, today) && <p className="alert">{MSG_WEIGHT_STALLED}</p>}
+      {exportReminder && <p className="alert">{exportReminder}</p>}
 
       {active ? (
         <button className="btn big primary" onClick={() => onOpenWorkout(active.id)}>

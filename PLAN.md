@@ -181,4 +181,22 @@ Alle spørsmål er besvart. Neste steg er milepæl 1.
   fullførte økt, også uker uten økter (ellers ville en hvile-uke blåse opp snittet). Samme regel
   for snitt av harde sett. «Minst 4 uker med data» = minst 4 slike fulle uker.
 
-**Neste:** milepæl 6 – innstillinger, redigering, eksport/import, PWA/offline.
+### Milepæl 6 – ferdig (2026-09-25)
+- Innstillinger: aktivt program, start-/målvekt, mål-tempo, teknikkfase, globale pausetider,
+  øvelsesliste, programliste, backup.
+- Programredigering (`ProgramEditor.tsx`): navn, økter (legg til/fjern/flytt, bonus), øvelser per økt
+  (velg øvelse, sett, rep-område, valgfri, alternativer, flytt, fjern). Validering før lagring.
+  Egne programmer kan slettes (ikke det aktive). Øvelsesredigering (`ExerciseEditor.tsx`): navn,
+  type, steg, pause, muskler (trykk veksler 1 → 0,5 → ingen). «Tilbakestill til standard».
+- Bytt øvelse i økta ble laget i milepæl 3.
+- Backup (`data/backup.ts`): JSON-eksport av alt, import med validering + bekreftelse (erstatter alt),
+  CSV for sett og kroppsvekt (semikolon + desimalkomma for norsk Excel/Numbers). Påminnelse på Hjem.
+- PWA: ikon (SVG → PNG 192/512/180 via headless Chrome), manifest, apple-touch-icon, service worker
+  precacher alt. Testet: appen laster og virker med serveren slått av.
+- **Avgjørelser:** endring av global pausetid oppdaterer bare øvelser som hadde den gamle globale
+  verdien (egne pausetider beholdes). «Tilbakestill til standard» overskriver bare standardøvelser og
+  de to standardprogrammene; egne øvelser/programmer og all historikk beholdes. Øvelser kan ikke
+  slettes (historikk peker på dem). Aldri eksportert → påminnelse når første økt er > 14 dager
+  gammel. Skjemafelt har ≥ 16 px skrift så iPhone ikke zoomer.
+
+**Neste:** milepæl 7 – README (kjøre lokalt, legge ut på GitHub Pages, installere på iPhone).

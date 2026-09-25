@@ -56,6 +56,23 @@ describe('repo', () => {
     expect((await db.workouts.get(id))?.plan[4].exerciseId).toBe('lateral_cable')
   })
 
+  it('global pausetid endrer bare øvelser som fulgte den gamle verdien', async () => {
+    await db.exercises.update('leg_press', { rest: 150 })
+    await repo.setGlobalRest('flerledd', 90)
+    expect((await db.exercises.get('chest_press'))?.rest).toBe(90)
+    expect((await db.exercises.get('leg_press'))?.rest).toBe(150)
+    expect((await db.exercises.get('flyes'))?.rest).toBe(75)
+    expect((await db.settings.get('settings'))?.restCompound).toBe(90)
+  })
+
+  it('tilbakestill til standard beholder egne programmer', async () => {
+    await db.programs.update('bro_split', { name: 'Endret' })
+    await db.programs.add({ id: 'mitt', name: 'Mitt', builtIn: false, sessions: [] })
+    await repo.resetDefaults()
+    expect((await db.programs.get('bro_split'))?.name).toBe('Bro split')
+    expect(await db.programs.get('mitt')).toBeDefined()
+  })
+
   it('pausetimer lagres som tidsstempel og kan forlenges', async () => {
     await repo.startRest(75)
     await repo.extendRest(30)
