@@ -137,4 +137,16 @@ Alle spørsmål er besvart. Neste steg er milepæl 1.
 - `vite.config.ts` bruker `base: './'` så appen virker på GitHub Pages.
 - Midlertidig hjem-skjerm viser aktivt program med øktene. Fanene finnes, men er tomme.
 
-**Neste:** milepæl 2 – rotasjon og progresjonsmotor i `src/domain/` med testene fra seksjon 15.
+### Milepæl 2 – ferdig (2026-09-25)
+- `src/domain/`: `dates.ts`, `rounding.ts` (steg-avrunding, Epley), `progression.ts`, `rotation.ts`,
+  `rir.ts` (teknikkfase + mål-RIR), `warmup.ts`, `records.ts`. Ingen React/Dexie der.
+- `exerciseHistory(exerciseId, workouts)` henter historikk per øvelse på tvers av programmer, med
+  plan-snapshot (antall sett/rep-område slik det var da).
+- `suggest(history, {step, repMin, techniquePhase})` gir `kind` (first/tooHeavy/deload/increase/hold),
+  vekt, mål og meldinger. Prioritet 4 > 5 > 2 > 3; stagnasjons- og for lett-melding kommer i tillegg.
+- **Små avgjørelser:** økning = forrige vekt + steg (ikke avrundet, i tilfelle vekta ligger utenfor
+  steg-rutenettet). «For tungt»/deload viser mål = repMin. Rekord vises ikke første gang en øvelse gjøres.
+  Er første dato ikke satt (ingen økt ennå) regnes det som teknikkfase.
+- 46 tester. Testene for kroppsvekt og harde sett (seksjon 15) kommer i milepæl 4 og 5.
+
+**Neste:** milepæl 3 – øktlogging og pausetimer (Økt-skjermen, hjem-knappen «Start neste økt»).
