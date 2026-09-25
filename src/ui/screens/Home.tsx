@@ -1,43 +1,90 @@
 import { useLiveQuery } from 'dexie-react-hooks'
+import { useState } from 'react'
+import { localDate, mondayOf } from '../../domain/dates'
+import { isCompleted, nextSession } from '../../domain/rotation'
+import type { ProgramSession } from '../../domain/types'
 import { db } from '../../data/db'
+import { skipBonus, startWorkout } from '../../data/repo'
+import { formatDate } from '../format'
 
-// Midlertidig hjem-skjerm (milepæl 1): viser aktivt program og øktene.
-export function Home() {
+export function Home({ onOpenWorkout }: { onOpenWorkout: (id: string) => void }) {
+  const [pick, setPick] = useState(false)
   const data = useLiveQuery(async () => {
-    const settings = await db.settings.get('settings')
-    const programs = await db.programs.toArray()
-    const exercises = await db.exercises.toArray()
-    return { settings, programs, exercises }
+    const [settings, programs, workouts] = await Promise.all([
+      db.settings.get('settings'),
+      db.programs.toArray(),
+      db.workouts.toArray(),
+    ])
+    return { settings, programs, workouts }
   })
   if (!data?.settings) return <p className="muted">Laster …</p>
 
-  const names = new Map(data.exercises.map((e) => [e.id, e.name]))
-  const active = data.programs.find((p) => p.id === data.settings!.activeProgramId)
+  const { settings, programs, workouts } = data
+  const program = programs.find((p) => p.id === settings.activeProgramId) ?? programs[0]
+  const today = localDate(new Date())
+  const week = mondayOf(today)
+  const active = workouts.find((w) => w.end === null)
+  const next = nextSession({ program, workouts, today, bonusSkippedWeek: settings.bonusSkippedWeek })
+  const sessionName = (programId: string, sessionId: string) =>
+    programs.find((p) => p.id === programId)?.sessions.find((s) => s.id === sessionId)?.name ?? sessionId
+  const thisWeek = workouts
+    .filter((w) => isCompleted(w) && mondayOf(localDate(w.start)) === week)
+    .sort((a, b) => a.start.localeCompare(b.start))
+
+  async function start(session: ProgramSession) {
+    onOpenWorkout(await startWorkout(program.id, session))
+  }
 
   return (
     <>
       <h1>Trening</h1>
-      <p className="muted">
-        Aktivt program: <strong>{active?.name}</strong> · {data.exercises.length} øvelser i biblioteket
-      </p>
-      {active?.sessions.map((s) => (
-        <section key={s.id} className="card">
-          <h2>
-            {s.name} {s.bonus && <span className="tag">bonus</span>}
-          </h2>
+      <p className="muted small">{program.name}</p>
+
+      {active ? (
+        <button className="btn big primary" onClick={() => onOpenWorkout(active.id)}>
+          Fortsett økt: {sessionName(active.programId, active.sessionId)}
+        </button>
+      ) : (
+        <>
+          <button className="btn big primary" onClick={() => start(next)}>
+            Start neste økt: {next.name}
+          </button>
+          <div className="row-actions">
+            {next.bonus && (
+              <button className="btn small ghost" onClick={() => skipBonus(week)}>
+                Hopp over bonus
+              </button>
+            )}
+            <button className="btn small ghost" onClick={() => setPick((p) => !p)}>
+              Velg annen økt
+            </button>
+          </div>
+          {pick && (
+            <div className="swap">
+              {program.sessions.map((s) => (
+                <button key={s.id} className="btn" onClick={() => start(s)}>
+                  {s.name} {s.bonus && <span className="tag">bonus</span>}
+                </button>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
+      <section className="card">
+        <h2>Denne uka: {thisWeek.length} økter</h2>
+        {thisWeek.length === 0 ? (
+          <p className="muted small">Ingen økter ennå.</p>
+        ) : (
           <ul>
-            {s.slots.map((sl, i) => (
-              <li key={i}>
-                {names.get(sl.exerciseId)} – {sl.sets} × {sl.repMin}–{sl.repMax}
-                {sl.optional && ' (valgfri)'}
-                {sl.alternatives.length > 0 && (
-                  <span className="muted"> · alt: {sl.alternatives.map((a) => names.get(a)).join(', ')}</span>
-                )}
+            {thisWeek.map((w) => (
+              <li key={w.id}>
+                {formatDate(w.start)} – {sessionName(w.programId, w.sessionId)}
               </li>
             ))}
           </ul>
-        </section>
-      ))}
+        )}
+      </section>
     </>
   )
 }
