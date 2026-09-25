@@ -172,4 +172,13 @@ Alle spørsmål er besvart. Neste steg er milepæl 1.
   «I rute» når avviket fra mål-tempo er under 0,05 kg/uke. Grafen viser ikke målvekt-linje (ville
   presset skalaen), målet står i nøkkeltallene.
 
-**Neste:** milepæl 5 – statistikk (harde sett per muskel, økter per uke, programforslag, graf per øvelse).
+### Milepæl 5 – ferdig (2026-09-25)
+- `domain/stats.ts`: harde sett per muskel per uke og snitt 4 uker, økter per uke (4 og 6 uker),
+  programforslag, progresjon per øvelse (arbeidsvekt, reps, beste e1RM).
+- Statistikk-skjerm: forslagskort med «Bytt til overkropp/underkropp», nøkkeltall, tabell med
+  harde sett (sideskulder markert «prioritet», ingen mål-tall), graf + tabell per øvelse.
+- **Avgjørelse (tolkning av svar 21):** «uker med data» = fulle uker fra og med uka for første
+  fullførte økt, også uker uten økter (ellers ville en hvile-uke blåse opp snittet). Samme regel
+  for snitt av harde sett. «Minst 4 uker med data» = minst 4 slike fulle uker.
+
+**Neste:** milepæl 6 – innstillinger, redigering, eksport/import, PWA/offline.
