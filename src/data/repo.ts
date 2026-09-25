@@ -90,3 +90,12 @@ export async function clearRest() {
 export async function skipBonus(weekMonday: string) {
   await db.settings.update('settings', { bonusSkippedWeek: weekMonday })
 }
+
+/** Én vekt per dag; ny registrering samme dag overskriver (SPEC 10). */
+export async function setBodyweight(date: string, kg: number) {
+  await db.bodyweight.put({ date, kg })
+}
+
+export async function deleteBodyweight(date: string) {
+  await db.bodyweight.delete(date)
+}

@@ -3,23 +3,26 @@ import { useState } from 'react'
 import { localDate, mondayOf } from '../../domain/dates'
 import { isCompleted, nextSession } from '../../domain/rotation'
 import type { ProgramSession } from '../../domain/types'
+import { MSG_WEIGHT_STALLED, weightStalled } from '../../domain/bodyweight'
 import { db } from '../../data/db'
 import { skipBonus, startWorkout } from '../../data/repo'
+import { BodyweightQuick } from '../components/BodyweightQuick'
 import { formatDate } from '../format'
 
 export function Home({ onOpenWorkout }: { onOpenWorkout: (id: string) => void }) {
   const [pick, setPick] = useState(false)
   const data = useLiveQuery(async () => {
-    const [settings, programs, workouts] = await Promise.all([
+    const [settings, programs, workouts, bodyweight] = await Promise.all([
       db.settings.get('settings'),
       db.programs.toArray(),
       db.workouts.toArray(),
+      db.bodyweight.toArray(),
     ])
-    return { settings, programs, workouts }
+    return { settings, programs, workouts, bodyweight }
   })
   if (!data?.settings) return <p className="muted">Laster …</p>
 
-  const { settings, programs, workouts } = data
+  const { settings, programs, workouts, bodyweight } = data
   const program = programs.find((p) => p.id === settings.activeProgramId) ?? programs[0]
   const today = localDate(new Date())
   const week = mondayOf(today)
@@ -39,6 +42,7 @@ export function Home({ onOpenWorkout }: { onOpenWorkout: (id: string) => void })
     <>
       <h1>Trening</h1>
       <p className="muted small">{program.name}</p>
+      {weightStalled(bodyweight, today) && <p className="alert">{MSG_WEIGHT_STALLED}</p>}
 
       {active ? (
         <button className="btn big primary" onClick={() => onOpenWorkout(active.id)}>
@@ -70,6 +74,8 @@ export function Home({ onOpenWorkout }: { onOpenWorkout: (id: string) => void })
           )}
         </>
       )}
+
+      <BodyweightQuick />
 
       <section className="card">
         <h2>Denne uka: {thisWeek.length} økter</h2>

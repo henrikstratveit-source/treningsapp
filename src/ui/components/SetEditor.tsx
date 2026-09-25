@@ -86,7 +86,7 @@ export function SetEditor({ initial, step, weightUnit, targetLabel, saveLabel = 
             Avbryt
           </button>
         )}
-        <button className="btn primary" disabled={v.reps <= 0} onClick={() => onSave(v)}>
+        <button className="btn primary" disabled={v.reps <= 0 || v.weight <= 0} onClick={() => onSave(v)}>
           {saveLabel}
         </button>
       </div>

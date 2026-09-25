@@ -149,4 +149,27 @@ Alle spørsmål er besvart. Neste steg er milepæl 1.
   Er første dato ikke satt (ingen økt ennå) regnes det som teknikkfase.
 - 46 tester. Testene for kroppsvekt og harde sett (seksjon 15) kommer i milepæl 4 og 5.
 
-**Neste:** milepæl 3 – øktlogging og pausetimer (Økt-skjermen, hjem-knappen «Start neste økt»).
+### Milepæl 3 – ferdig (2026-09-25)
+- Hjem: «Start neste økt» (rotasjon), «Velg annen økt», «Hopp over bonus», «Fortsett økt», ukens økter.
+- Økt-skjerm (`ui/screens/Workout.tsx`, `ui/components/ExerciseCard.tsx`): mål og forrige gang per
+  øvelse, meldinger, oppvarmingsforslag (ett trykk logger), én aktiv sett-rad med +/− for vekt og
+  reps, RIR 0–4+, god form, lagre. Trykk på et logget sett for å endre, × for å slette. ± sett, Bytt øvelse.
+- Pausetimer (`RestTimer.tsx`) lagres som tidsstempel i settings, vises øverst på alle skjermer,
+  +30 s / hopp over, pip (Web Audio) når tida er ute. Lyd låses opp ved lagring av sett (iOS).
+- Sammendrag etter økta med neste-gang-forslag og rekorder. Enkel Historikk-liste.
+- **Avgjørelser:** avslutt uten arbeidssett → tilbud om å slette økta. Lagre er av når vekt er 0.
+  Manualøvelser (id med `db`) viser «kg/man.». Ekstra/fjernede sett-rader huskes ikke ved reload
+  (loggede sett gjør det). Pipet spilles bare hvis tida gikk ut for under 5 s siden.
+  `newId()` har reserve når `crypto.randomUUID` mangler (http på lokalnett).
+
+### Milepæl 4 – ferdig (2026-09-25)
+- `domain/bodyweight.ts`: 7-dagers glidende snitt, ukessnitt (≥ 3 målinger = gyldig), varsel
+  «Vekta står stille. Spis mer.», snittendring per uke siste 4 uker, sammenligning mot mål-tempo.
+- Hjem: rask registrering (én per dag, overskriver) + varsel. Vekt-skjerm: nøkkeltall, graf
+  (daglig = prikker, 7-dagers snitt = linje), ukestabell, liste med sletting.
+- **Avgjørelser:** «endring hittil» = siste 7-dagers snitt − startvekt. «Siste 4 uker» = fra eldste
+  gyldige fulle uke inntil 4 uker før siste gyldige fulle uke, delt på antall uker imellom.
+  «I rute» når avviket fra mål-tempo er under 0,05 kg/uke. Grafen viser ikke målvekt-linje (ville
+  presset skalaen), målet står i nøkkeltallene.
+
+**Neste:** milepæl 5 – statistikk (harde sett per muskel, økter per uke, programforslag, graf per øvelse).

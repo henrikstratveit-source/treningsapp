@@ -2,6 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { useState } from 'react'
 import { db } from './data/db'
 import { RestTimer } from './ui/components/RestTimer'
+import { Bodyweight } from './ui/screens/Bodyweight'
 import { History } from './ui/screens/History'
 import { Home } from './ui/screens/Home'
 import { Summary } from './ui/screens/Summary'
@@ -36,6 +37,8 @@ export default function App() {
     content = <Home onOpenWorkout={(id) => setView({ kind: 'workout', id })} />
   } else if (tab === 'historikk') {
     content = <History />
+  } else if (tab === 'vekt') {
+    content = <Bodyweight />
   } else {
     content = <p className="muted">Kommer i en senere milepæl.</p>
   }
