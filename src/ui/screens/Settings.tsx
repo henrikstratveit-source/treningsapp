@@ -62,6 +62,26 @@ export function Settings() {
       <h1>Innstillinger</h1>
 
       <section className="card form">
+        <h2>Utseende</h2>
+        <div className="segmented">
+          {(
+            [
+              ['ny', 'Ny'],
+              ['klassisk', 'Klassisk'],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              className={`chip ${(settings.theme ?? 'ny') === id ? 'on' : ''}`}
+              onClick={() => updateSettings({ theme: id })}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="card form">
         <h2>Program</h2>
         <select className="select" value={settings.activeProgramId} onChange={(e) => updateSettings({ activeProgramId: e.target.value })}>
           {programs.map((p) => (

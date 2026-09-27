@@ -13,17 +13,19 @@ import { formatDate } from '../format'
 export function Home({ onOpenWorkout }: { onOpenWorkout: (id: string) => void }) {
   const [pick, setPick] = useState(false)
   const data = useLiveQuery(async () => {
-    const [settings, programs, workouts, bodyweight] = await Promise.all([
+    const [settings, programs, workouts, bodyweight, exercises] = await Promise.all([
       db.settings.get('settings'),
       db.programs.toArray(),
       db.workouts.toArray(),
       db.bodyweight.toArray(),
+      db.exercises.toArray(),
     ])
-    return { settings, programs, workouts, bodyweight }
+    return { settings, programs, workouts, bodyweight, exercises }
   })
   if (!data?.settings) return <p className="muted">Laster …</p>
 
-  const { settings, programs, workouts, bodyweight } = data
+  const { settings, programs, workouts, bodyweight, exercises } = data
+  const exNames = new Map(exercises.map((e) => [e.id, e.name]))
   const program = programs.find((p) => p.id === settings.activeProgramId) ?? programs[0]
   const today = localDate(new Date())
   const week = mondayOf(today)
@@ -56,13 +58,44 @@ export function Home({ onOpenWorkout }: { onOpenWorkout: (id: string) => void })
       {weightStalled(bodyweight, today) && <p className="alert">{MSG_WEIGHT_STALLED}</p>}
       {exportReminder && <p className="alert">{exportReminder}</p>}
 
+      {/* Utseendet «Ny»: kort med neste økt og øvelsene (skjult i klassisk) */}
+      <section className="hero">
+        {active ? (
+          <>
+            <div className="hero-label">Pågår</div>
+            <div className="hero-title">{sessionName(active.programId, active.sessionId)}</div>
+            <button className="btn big primary full" onClick={() => onOpenWorkout(active.id)}>
+              Fortsett økta
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="hero-label">{next.bonus ? 'Bonusøkt' : 'Neste økt'}</div>
+            <div className="hero-title">{next.name}</div>
+            <ul className="hero-list">
+              {next.slots.map((sl, i) => (
+                <li key={i}>
+                  <span>{exNames.get(sl.exerciseId) ?? sl.exerciseId}</span>
+                  <span>
+                    {sl.sets} × {sl.repMin}–{sl.repMax}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <button className="btn big primary full" onClick={() => start(next)}>
+              Start økta
+            </button>
+          </>
+        )}
+      </section>
+
       {active ? (
-        <button className="btn big primary" onClick={() => onOpenWorkout(active.id)}>
+        <button className="btn big primary classic-only" onClick={() => onOpenWorkout(active.id)}>
           Fortsett økt: {sessionName(active.programId, active.sessionId)}
         </button>
       ) : (
         <>
-          <button className="btn big primary" onClick={() => start(next)}>
+          <button className="btn big primary classic-only" onClick={() => start(next)}>
             Start neste økt: {next.name}
           </button>
           <div className="row-actions">

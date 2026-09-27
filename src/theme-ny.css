@@ -1,0 +1,146 @@
+/*
+ * Utseende «Ny». Legges oppå theme.css og gjelder bare når <html data-theme="ny">.
+ * Det klassiske utseendet (theme.css alene) er urørt – bytt i Innst. → Utseende.
+ */
+
+/* Elementer som bare finnes i det nye utseendet */
+.tab-icon,
+.hero { display: none; }
+
+:root[data-theme='ny'] {
+  --bg: #0a0b0d;
+  --surface: #141619;
+  --surface-2: #1e2125;
+  --border: #25292e;
+  --text: #f2f4f5;
+  --muted: #8a9198;
+  --accent: #c5f04a;
+  --accent-ink: #0a0b0d;
+  --good: #5fd49a;
+  --warn: #f2b13c;
+  --bad: #f06a5f;
+  --radius: 18px;
+}
+
+:root[data-theme='ny'] body { letter-spacing: -0.005em; }
+:root[data-theme='ny'] h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.025em; margin: 12px 0 2px; }
+:root[data-theme='ny'] h2 { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; }
+
+/* Kort */
+:root[data-theme='ny'] .card,
+:root[data-theme='ny'] .tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+:root[data-theme='ny'] .card { padding: 16px; }
+:root[data-theme='ny'] .card.highlight { border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+:root[data-theme='ny'] .tag { background: var(--surface-2); border-radius: 6px; font-weight: 600; }
+
+/* Knapper */
+:root[data-theme='ny'] .btn { background: var(--surface-2); border-radius: 14px; font-weight: 600; }
+:root[data-theme='ny'] .btn.primary { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+:root[data-theme='ny'] .btn.primary:disabled { background: var(--surface-2); color: var(--muted); opacity: 1; }
+:root[data-theme='ny'] .btn.ghost { background: transparent; color: var(--accent); }
+:root[data-theme='ny'] .btn.ghost.danger { color: var(--bad); }
+:root[data-theme='ny'] .btn.big { border-radius: var(--radius); padding: 18px; font-size: 1.1rem; }
+
+/* Fanelinje med ikoner */
+:root[data-theme='ny'] .tabbar {
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+}
+:root[data-theme='ny'] .tabbar button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 2px 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+:root[data-theme='ny'] .tabbar button.active { color: var(--accent); }
+:root[data-theme='ny'] .tab-icon { display: block; width: 24px; height: 24px; }
+
+/* Hjem: neste økt */
+:root[data-theme='ny'] .hero {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 18px;
+  margin: 14px 0;
+}
+.hero-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); }
+.hero-title { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; margin: 2px 0 10px; }
+.hero-list { list-style: none; padding: 0; margin: 0 0 14px; }
+.hero-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  border-top: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+.hero-list li span:last-child { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.hero .btn.big { margin: 0; }
+.hero-actions { display: flex; justify-content: space-between; margin-top: 6px; }
+:root[data-theme='ny'] .classic-only { display: none; }
+
+/* Økt */
+:root[data-theme='ny'] .workout-head h1 { font-size: 1.4rem; }
+:root[data-theme='ny'] .goal {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--muted);
+  border-radius: 14px;
+}
+:root[data-theme='ny'] .goal.up { border-left-color: var(--accent); }
+:root[data-theme='ny'] .goal.up .goal-label { color: var(--accent); }
+:root[data-theme='ny'] .goal-main { font-size: 2.1rem; font-weight: 800; letter-spacing: -0.02em; }
+
+:root[data-theme='ny'] .set-editor {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+:root[data-theme='ny'] .btn.step { background: var(--surface-2); border-radius: 12px; }
+:root[data-theme='ny'] .stepper-value { background: var(--surface); border-radius: 12px; }
+:root[data-theme='ny'] .stepper-value input { font-size: 1.5rem; font-weight: 800; }
+:root[data-theme='ny'] .chip { background: var(--surface-2); border-radius: 10px; }
+:root[data-theme='ny'] .chip.on { background: var(--accent); color: var(--accent-ink); }
+:root[data-theme='ny'] .chips .chip.half { background: color-mix(in srgb, var(--accent) 25%, var(--surface-2)); }
+:root[data-theme='ny'] .check input { accent-color: var(--accent); }
+:root[data-theme='ny'] .set-done { border-bottom-color: var(--border); }
+:root[data-theme='ny'] .exercise.compact .compact-check { color: var(--accent); }
+
+/* Pausetimer */
+:root[data-theme='ny'] .rest {
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+:root[data-theme='ny'] .rest-bar { background: var(--accent); height: 3px; }
+:root[data-theme='ny'] .rest-time { font-size: 2.1rem; font-weight: 800; letter-spacing: -0.02em; }
+:root[data-theme='ny'] .rest.done { background: color-mix(in srgb, var(--accent) 18%, var(--surface)); }
+:root[data-theme='ny'] .rest.done .rest-label { color: var(--accent); }
+
+/* Varsler, tabeller, skjema */
+:root[data-theme='ny'] .alert {
+  background: color-mix(in srgb, var(--warn) 12%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent);
+  border-radius: 14px;
+}
+:root[data-theme='ny'] .tile-value { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; }
+:root[data-theme='ny'] .table td { border-bottom-color: var(--border); }
+:root[data-theme='ny'] .sets-table tr.prio td:first-child { color: var(--accent); }
+:root[data-theme='ny'] .bar-cell .bar { background: var(--accent); opacity: 0.3; }
+:root[data-theme='ny'] .input,
+:root[data-theme='ny'] .select { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; }
+:root[data-theme='ny'] .list-item { border-bottom-color: var(--border); }
+:root[data-theme='ny'] details summary { color: var(--accent); }
+:root[data-theme='ny'] .form .stepper-value,
+:root[data-theme='ny'] .card > .set-inputs .stepper-value { background: var(--bg); border: 1px solid var(--border); }

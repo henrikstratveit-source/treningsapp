@@ -1,7 +1,9 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { db } from './data/db'
 import { RestTimer } from './ui/components/RestTimer'
+import { TabIcon } from './ui/components/TabIcon'
+import { applyTheme } from './ui/theme'
 import { Bodyweight } from './ui/screens/Bodyweight'
 import { History } from './ui/screens/History'
 import { Settings } from './ui/screens/Settings'
@@ -24,7 +26,12 @@ const tabs: { id: Tab; label: string }[] = [
 export default function App() {
   const [tab, setTab] = useState<Tab>('hjem')
   const [view, setView] = useState<View>({ kind: 'tabs' })
-  const rest = useLiveQuery(async () => (await db.settings.get('settings'))?.activeRest ?? null)
+  const settings = useLiveQuery(() => db.settings.get('settings'))
+  const rest = settings?.activeRest ?? null
+  const theme = settings?.theme ?? 'ny'
+  useEffect(() => {
+    if (settings) applyTheme(theme)
+  }, [settings, theme])
   const home = () => {
     setView({ kind: 'tabs' })
     setTab('hjem')
@@ -49,12 +56,13 @@ export default function App() {
 
   return (
     <div className="app">
-      <RestTimer rest={rest ?? null} />
+      <RestTimer rest={rest} />
       <main className="content">{content}</main>
       {view.kind === 'tabs' && (
         <nav className="tabbar">
           {tabs.map((t) => (
             <button key={t.id} className={t.id === tab ? 'active' : ''} onClick={() => setTab(t.id)}>
+              <TabIcon name={t.id} />
               {t.label}
             </button>
           ))}

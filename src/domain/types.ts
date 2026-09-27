@@ -120,4 +120,8 @@ export interface Settings {
   shortcutTimer?: boolean
   /** Navnet på snarveien som starter timeren */
   shortcutName?: string
+  /** Utseende. Mangler i eldre data = 'ny'. */
+  theme?: Theme
 }
+
+export type Theme = 'ny' | 'klassisk'

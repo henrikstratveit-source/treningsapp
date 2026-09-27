@@ -226,3 +226,9 @@ Alle spørsmål er besvart. Neste steg er milepæl 1.
 - **Ferdige øvelser klappes sammen (2026-09-27):** når alle sett-radene er logget blir øvelsen en smal
   linje («✓ navn · vekt × reps»); trykk for å åpne igjen, «Skjul» for å lukke. Etter siste sett ruller
   appen til neste uferdige øvelse, og en påbegynt økt åpnes ved første uferdige øvelse.
+- **Nytt utseende (2026-09-27):** valg i Innst. → Utseende: «Ny» (standard) eller «Klassisk».
+  Klassisk = `theme.css` alene, urørt. «Ny» = `theme-ny.css`, som bare gjelder under
+  `html[data-theme="ny"]`: nesten svart bakgrunn, kort med tynn kant, limegrønn aksent (#c5f04a) bare
+  på handlinger og fremgang, større tall, ikoner i fanelinja (`TabIcon.tsx`), «Neste økt»-kort på Hjem
+  med øvelsene. Valget lagres i settings (`theme`) og speiles i localStorage så riktig utseende vises
+  før databasen er lest. Git-tag `utseende-klassisk` peker på siste versjon før endringen.

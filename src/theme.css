@@ -316,3 +316,6 @@ p { margin: 6px 0; }
 details summary { cursor: pointer; color: var(--accent); padding: 6px 0; }
 .steps { padding-left: 20px; margin: 6px 0; }
 .steps li { margin: 6px 0; }
+.segmented { display: flex; gap: 6px; }
+.segmented .chip { background: var(--surface-2); min-height: 44px; }
+.segmented .chip.on { background: var(--accent); }
