@@ -2,6 +2,7 @@ import Dexie, { type EntityTable } from 'dexie'
 import type { BodyweightEntry, Exercise, Program, Settings, WorkoutSession } from '../domain/types'
 import { seedExercises } from './seed/exercises'
 import { BRO_SPLIT_ID, seedPrograms } from './seed/programs'
+import { DEFAULT_SHORTCUT_NAME } from '../domain/shortcut'
 
 export class TrainingDb extends Dexie {
   exercises!: EntityTable<Exercise, 'id'>
@@ -41,6 +42,8 @@ export function defaultSettings(): Settings {
     lastExport: null,
     bonusSkippedWeek: null,
     activeRest: null,
+    shortcutTimer: false,
+    shortcutName: DEFAULT_SHORTCUT_NAME,
   }
 }
 

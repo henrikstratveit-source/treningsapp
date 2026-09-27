@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { MSG_FIRST, suggest, type Performance } from '../../domain/progression'
+import { shortcutUrl } from '../../domain/shortcut'
 import { formatRir, targetRir } from '../../domain/rir'
 import type { Exercise, PlannedSlot, SetEntry, WorkoutSession } from '../../domain/types'
 import { warmupSets } from '../../domain/warmup'
 import { isDumbbell } from '../../domain/workout'
 import { deleteSet, newId, saveSet, startRest, swapExercise } from '../../data/repo'
-import { describeSuggestion, kg, repsList } from '../format'
+import { kg, repsList } from '../format'
 import { unlockAudio } from '../sound'
+import { Goal } from './Goal'
 import { SetEditor, type SetValues } from './SetEditor'
 
 interface Props {
@@ -19,9 +21,21 @@ interface Props {
   history: Performance[]
   technique: boolean
   firstCompound: boolean
+  /** Snarvei som starter iPhone-timer, eller null */
+  shortcut: string | null
 }
 
-export function ExerciseCard({ workout, slot, exercise, swapOptions, optional, history, technique, firstCompound }: Props) {
+export function ExerciseCard({
+  workout,
+  slot,
+  exercise,
+  swapOptions,
+  optional,
+  history,
+  technique,
+  firstCompound,
+  shortcut,
+}: Props) {
   const [extra, setExtra] = useState(0)
   const [editing, setEditing] = useState<string | null>(null)
   const [swapOpen, setSwapOpen] = useState(false)
@@ -68,12 +82,17 @@ export function ExerciseCard({ workout, slot, exercise, swapOptions, optional, h
       goodForm: v.goodForm,
       time: existing?.time ?? new Date().toISOString(),
     }
-    await saveSet(workout.id, entry)
-    setEditing(null)
-    if (!existing) {
-      unlockAudio()
-      await startRest(exercise.rest)
+    if (existing) {
+      await saveSet(workout.id, entry)
+      setEditing(null)
+      return
     }
+    unlockAudio()
+    const saved = Promise.all([saveSet(workout.id, entry), startRest(exercise.rest)])
+    // Åpnes direkte i trykket (iOS krever brukerhandling). Lagringen er allerede i gang.
+    if (shortcut) window.location.href = shortcutUrl(shortcut, exercise.rest)
+    await saved
+    setEditing(null)
   }
 
   async function logWarmup(weight: number, reps: number) {
@@ -122,7 +141,7 @@ export function ExerciseCard({ workout, slot, exercise, swapOptions, optional, h
         </div>
       )}
 
-      <p className="target">{describeSuggestion(s, slot.repMin, slot.repMax)}</p>
+      <Goal s={s} repMin={slot.repMin} repMax={slot.repMax} unit={unit} />
       {last && (
         <p className="muted small">
           Forrige gang: {kg(s.previousWeight!)} × {repsList(s.previousReps)}

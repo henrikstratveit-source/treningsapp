@@ -2,6 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { useRef, useState } from 'react'
 import { localDate } from '../../domain/dates'
 import { inTechniquePhase } from '../../domain/rir'
+import { DEFAULT_SHORTCUT_NAME, shortcutUrl } from '../../domain/shortcut'
 import type { Exercise, Program } from '../../domain/types'
 import { daysSinceExport, exportCsv, exportJson, parseBackup, restoreBackup } from '../../data/backup'
 import { db } from '../../data/db'
@@ -132,6 +133,52 @@ export function Settings() {
           </label>
         </div>
         <p className="muted small">Gjelder alle øvelser som ikke har egen pausetid.</p>
+      </section>
+
+      <section className="card form">
+        <h2>Pausetimer på iPhone</h2>
+        <p className="muted small">
+          Starter en vanlig iPhone-timer når du lagrer et sett. Den vises i Dynamic Island og på låseskjermen, og ringer
+          når pausen er over – også når du er i en annen app.
+        </p>
+        <label className="check">
+          <input
+            type="checkbox"
+            checked={!!settings.shortcutTimer}
+            onChange={(e) => updateSettings({ shortcutTimer: e.target.checked })}
+          />
+          Start iPhone-timer via Snarveier
+        </label>
+        <label>
+          Navn på snarveien
+          <input
+            className="input"
+            value={settings.shortcutName ?? DEFAULT_SHORTCUT_NAME}
+            onChange={(e) => updateSettings({ shortcutName: e.target.value })}
+          />
+        </label>
+        <details className="small">
+          <summary>Slik lager du snarveien (én gang)</summary>
+          <ol className="steps">
+            <li>Åpne appen Snarveier og trykk + for ny snarvei.</li>
+            <li>Gi den navnet «{settings.shortcutName?.trim() || DEFAULT_SHORTCUT_NAME}» (må være helt likt).</li>
+            <li>Legg til handlingen «Hent tall fra input» og velg «Snarvei-input».</li>
+            <li>Legg til handlingen «Start timer», trykk på tallet og velg «Tall», og sett enheten til sekunder.</li>
+            <li>Trykk Ferdig. Test med knappen under – en timer på 10 sekunder skal starte.</li>
+          </ol>
+          <p className="muted">
+            Første gang spør iPhone om Treningsapp får åpne Snarveier – svar «Tillat». Etter at timeren er startet, bytter
+            iPhone til Snarveier; sveip tilbake eller gå rett til en annen app.
+          </p>
+        </details>
+        <button
+          className="btn full"
+          onClick={() => {
+            window.location.href = shortcutUrl(settings.shortcutName?.trim() || DEFAULT_SHORTCUT_NAME, 10)
+          }}
+        >
+          Test: start 10 sekunders timer
+        </button>
       </section>
 
       <section className="card form">

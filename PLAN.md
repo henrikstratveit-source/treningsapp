@@ -211,3 +211,15 @@ Alle spørsmål er besvart. Neste steg er milepæl 1.
   `git update-ref -d refs/original/refs/heads/main` og `git branch -D backup-før-omskriving`.
 - GitHub-konto: `henrikstratveit-source`. Repo: `treningsapp`. App-URL:
   `https://henrikstratveit-source.github.io/treningsapp/`.
+
+### Etter første test på gym (2026-09-27)
+- **Ønske: pausetimer i Dynamic Island og varsel i bakgrunnen.** Ikke mulig fra en PWA (krever native
+  app / ActivityKit; bakgrunnsvarsel krever Web Push med server). **Løsning:** valgfri innstilling som
+  kjører en iOS-snarvei (`shortcuts://run-shortcut?name=…&input=text&text=<sek>`) når et nytt
+  arbeidssett lagres. Snarveien starter en Klokke-timer → Dynamic Island + alarm. Oppsett står i
+  Innst. og README. Lagringen startes før lenken åpnes, og lenken åpnes i selve trykket (iOS krever
+  brukerhandling). Ikke testet på iPhone av Claude – brukeren tester.
+- **Ønske: tydelig vekt og reps per øvelse + automatisk progressive overload.** Fantes allerede
+  (dobbel progresjon, SPEC 8) fra andre gang en øvelse gjøres. Gjort tydeligere: ny «mål»-boks øverst
+  på hver øvelse (`Goal.tsx`) med stor vekt, mål-reps og kort forklaring (grønn = øk, gul = ned).
+  Ingen nye treningsregler.

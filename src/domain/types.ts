@@ -116,4 +116,8 @@ export interface Settings {
   bonusSkippedWeek: string | null
   /** Aktiv pausetimer, lagret som tidsstempel */
   activeRest: { start: string; seconds: number } | null
+  /** Start iPhone-timer (Dynamic Island) via Snarveier når et sett lagres. Mangler i eldre data. */
+  shortcutTimer?: boolean
+  /** Navnet på snarveien som starter timeren */
+  shortcutName?: string
 }

@@ -69,11 +69,25 @@ nettstedsdata i Safari, forsvinner de.
 - **Importer backup** henter alt tilbake, f.eks. på ny telefon. Import erstatter alt som er der.
 - CSV-eksport av sett og kroppsvekt kan åpnes i Excel/Numbers.
 
+## Pausetimer i Dynamic Island (valgfritt)
+
+En nettapp kan ikke vise noe i Dynamic Island eller varsle i bakgrunnen. Omveien er Snarveier:
+appen starter en vanlig iPhone-timer, som vises i Dynamic Island og ringer når pausen er over –
+også når du er i en annen app.
+
+1. Åpne **Snarveier** → **+** → gi snarveien navnet **Pausetimer**.
+2. Legg til **Hent tall fra input** med **Snarvei-input**.
+3. Legg til **Start timer**, velg **Tall** som varighet og **sekunder** som enhet.
+4. I appen: **Innst. → Pausetimer på iPhone** → slå på, og trykk **Test**.
+
+Når du lagrer et sett, bytter iPhone kort til Snarveier og timeren starter. Sveip tilbake eller gå
+rett til en annen app.
+
 ## Begrensninger på iPhone
 
 - Ingen vibrasjon fra nettapper.
-- Pausetimeren piper bare når appen er åpen. Den teller likevel riktig selv om skjermen har vært
-  av, fordi den regner fra starttidspunktet.
+- Appens egen pausetimer piper bare når appen er åpen. Den teller likevel riktig selv om skjermen
+  har vært av, fordi den regner fra starttidspunktet. Bruk Snarveier-timeren over for varsel.
 
 ## Struktur
 

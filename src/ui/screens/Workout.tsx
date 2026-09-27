@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { localDate } from '../../domain/dates'
 import { exerciseHistory } from '../../domain/progression'
 import { inTechniquePhase } from '../../domain/rir'
+import { activeShortcut } from '../../domain/shortcut'
 import type { Exercise } from '../../domain/types'
 import { db } from '../../data/db'
 import { discardWorkout, finishWorkout } from '../../data/repo'
@@ -113,6 +114,7 @@ export function Workout({ workoutId, onFinished, onClose }: Props) {
             history={exerciseHistory(ex.id, others)}
             technique={technique}
             firstCompound={slot.slotIndex === firstCompoundSlot}
+            shortcut={activeShortcut(settings)}
           />
         )
       })}

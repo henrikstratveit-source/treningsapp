@@ -114,6 +114,22 @@ p { margin: 6px 0; }
 .ex-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .exercise.is-done { opacity: 0.75; }
 .target { font-weight: 500; }
+.goal {
+  background: var(--surface-2);
+  border-left: 4px solid var(--muted);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 8px 0;
+}
+.goal.up { border-left-color: var(--good); }
+.goal.down { border-left-color: var(--warn); }
+.goal-label { font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+.goal.up .goal-label { color: var(--good); }
+.goal.down .goal-label { color: var(--warn); }
+.goal-main { font-size: 1.9rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.goal-unit { font-size: 1rem; font-weight: 500; color: var(--muted); }
+.goal-reps { font-size: 1.4rem; }
+.goal-sub { font-size: 0.85rem; color: var(--muted); margin-top: 2px; }
 .card.highlight { border: 1px solid var(--good); }
 
 .set-editor {
@@ -282,3 +298,7 @@ p { margin: 6px 0; }
   font: inherit;
   margin-bottom: 8px;
 }
+
+details summary { cursor: pointer; color: var(--accent); padding: 6px 0; }
+.steps { padding-left: 20px; margin: 6px 0; }
+.steps li { margin: 6px 0; }
