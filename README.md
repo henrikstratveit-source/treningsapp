@@ -78,10 +78,13 @@ også når du er i en annen app.
 1. Åpne **Snarveier** → **+** → gi snarveien navnet **Pausetimer**.
 2. Legg til **Hent tall fra input** med **Snarvei-input**.
 3. Legg til **Start timer**, velg **Tall** som varighet og **sekunder** som enhet.
-4. I appen: **Innst. → Pausetimer på iPhone** → slå på, og trykk **Test**.
+4. Valgfritt: legg til **Gå til Hjem-skjerm** til slutt (eller **Åpne app** → f.eks. TikTok), så
+   Snarveier ikke blir stående åpen.
+5. I appen: **Innst. → Pausetimer på iPhone** → slå på, og trykk **Test**.
 
-Når du lagrer et sett, bytter iPhone kort til Snarveier og timeren starter. Sveip tilbake eller gå
-rett til en annen app.
+Når du lagrer et sett, blinker Snarveier kort og timeren starter. iOS lar ikke en nettapp starte
+snarveier usynlig, og den kan ikke sende deg tilbake til en hjem-skjerm-app automatisk; bruk
+«◀ Trening» øverst til venstre for å gå tilbake.
 
 ## Begrensninger på iPhone
 

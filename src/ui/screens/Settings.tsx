@@ -164,6 +164,10 @@ export function Settings() {
             <li>Gi den navnet «{settings.shortcutName?.trim() || DEFAULT_SHORTCUT_NAME}» (må være helt likt).</li>
             <li>Legg til handlingen «Hent tall fra input» og velg «Snarvei-input».</li>
             <li>Legg til handlingen «Start timer», trykk på tallet og velg «Tall», og sett enheten til sekunder.</li>
+            <li>
+              Valgfritt, så Snarveier ikke blir stående åpen: legg til «Gå til Hjem-skjerm» til slutt – eller «Åpne
+              app» og velg appen du bruker i pausene.
+            </li>
             <li>Trykk Ferdig. Test med knappen under – en timer på 10 sekunder skal starte.</li>
           </ol>
           <p className="muted">
