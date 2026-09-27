@@ -4,21 +4,12 @@ import { shortcutUrl } from '../../domain/shortcut'
 import { formatRir, targetRir } from '../../domain/rir'
 import type { Exercise, PlannedSlot, SetEntry, WorkoutSession } from '../../domain/types'
 import { warmupSets } from '../../domain/warmup'
-import { isDumbbell } from '../../domain/workout'
+import { isDumbbell, slotProgress } from '../../domain/workout'
 import { deleteSet, newId, saveSet, startRest, swapExercise } from '../../data/repo'
 import { kg, repsList } from '../format'
 import { unlockAudio } from '../sound'
 import { Goal } from './Goal'
 import { SetEditor, type SetValues } from './SetEditor'
-
-/** Rull til første uferdige øvelse etter `afterSlot` (ellers første uferdige). Venter på ny tegning. */
-export function scrollToNextExercise(afterSlot = -1) {
-  setTimeout(() => {
-    const open = [...document.querySelectorAll<HTMLElement>('.exercise[data-slot]:not(.is-done)')]
-    const next = open.find((el) => Number(el.dataset.slot) > afterSlot) ?? open[0]
-    next?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }, 150)
-}
 
 interface Props {
   workout: WorkoutSession
@@ -32,6 +23,15 @@ interface Props {
   firstCompound: boolean
   /** Snarvei som starter iPhone-timer, eller null */
   shortcut: string | null
+  /** Øvelsen som er i fokus vises åpen; de andre som en smal linje */
+  focused: boolean
+  /** Sett lagt til (+) eller fjernet (−) i denne økta */
+  extra: number
+  onExtra: (delta: number) => void
+  onFocus: () => void
+  onBlur: () => void
+  /** Kalles når siste sett-rad er logget */
+  onCompleted: () => void
 }
 
 export function ExerciseCard({
@@ -44,21 +44,24 @@ export function ExerciseCard({
   technique,
   firstCompound,
   shortcut,
+  focused,
+  extra,
+  onExtra,
+  onFocus,
+  onBlur,
+  onCompleted,
 }: Props) {
-  const [extra, setExtra] = useState(0)
   const [editing, setEditing] = useState<string | null>(null)
   const [swapOpen, setSwapOpen] = useState(false)
-  const [expanded, setExpanded] = useState(false)
 
   const s = suggest(history, { step: exercise.step, repMin: slot.repMin, techniquePhase: technique })
   const mine = workout.sets.filter((x) => x.slotIndex === slot.slotIndex && x.exerciseId === exercise.id)
   const work = mine.filter((x) => !x.warmup)
   const warmLogged = mine.filter((x) => x.warmup)
-  const rows = Math.max(slot.sets + extra, work.length)
+  const { rows, done } = slotProgress(workout, slot, extra)
   const unit = isDumbbell(exercise.id) ? 'kg/man.' : 'kg'
   const warmups = warmupSets(exercise.type, s.weight, exercise.step, firstCompound)
   const last = history[history.length - 1]
-  const done = work.length >= rows
 
   const rirFor = (i: number) => formatRir(targetRir(exercise.type, i + 1, rows, technique))
 
@@ -103,10 +106,7 @@ export function ExerciseCard({
     if (shortcut) window.location.href = shortcutUrl(shortcut, exercise.rest)
     await saved
     setEditing(null)
-    if (work.length + 1 >= rows) {
-      setExpanded(false)
-      scrollToNextExercise(slot.slotIndex)
-    }
+    if (work.length + 1 >= rows) onCompleted()
   }
 
   async function logWarmup(weight: number, reps: number) {
@@ -124,17 +124,19 @@ export function ExerciseCard({
     })
   }
 
-  if (done && !expanded) {
+  if (!focused) {
     const w = work[0]?.weight
     const same = work.every((x) => x.weight === w)
+    let detail: string
+    if (done) detail = same ? `${kg(w)} × ${repsList(work.map((x) => x.reps))}` : work.map((x) => `${kg(x.weight)} × ${x.reps}`).join(', ')
+    else if (work.length > 0) detail = `${work.length} av ${rows} sett`
+    else detail = `${rows} × ${slot.repMin}–${slot.repMax}${s.weight !== null ? ` · ${kg(s.weight)}` : ''}${optional ? ' · valgfri' : ''}`
     return (
-      <button className="card exercise is-done compact" data-slot={slot.slotIndex} onClick={() => setExpanded(true)}>
-        <span className="compact-check">✓</span>
+      <button className={`card exercise compact ${done ? 'is-done' : ''}`} data-slot={slot.slotIndex} onClick={onFocus}>
+        <span className={done ? 'compact-check' : 'compact-dot'}>{done ? '✓' : work.length > 0 ? '◐' : '○'}</span>
         <span className="compact-text">
           <strong>{exercise.name}</strong>
-          <span className="muted small">
-            {same ? `${kg(w)} × ${repsList(work.map((x) => x.reps))}` : work.map((x) => `${kg(x.weight)} × ${x.reps}`).join(', ')}
-          </span>
+          <span className="muted small">{detail}</span>
         </span>
         <span className="muted">›</span>
       </button>
@@ -142,14 +144,14 @@ export function ExerciseCard({
   }
 
   return (
-    <section className={`card exercise ${done ? 'is-done' : ''}`} data-slot={slot.slotIndex}>
+    <section className={`card exercise focused ${done ? 'is-done' : ''}`} data-slot={slot.slotIndex}>
       <header className="ex-head">
         <h2>
           {exercise.name} {optional && <span className="tag">valgfri</span>}
           {done && <span className="tag good">ferdig</span>}
         </h2>
         {done && (
-          <button className="btn small ghost" onClick={() => setExpanded(false)}>
+          <button className="btn small ghost" onClick={onBlur}>
             Skjul
           </button>
         )}
@@ -272,10 +274,10 @@ export function ExerciseCard({
       })}
 
       <div className="row-actions">
-        <button className="btn small ghost" disabled={rows <= Math.max(1, work.length)} onClick={() => setExtra((e) => e - 1)}>
+        <button className="btn small ghost" disabled={rows <= Math.max(1, work.length)} onClick={() => onExtra(-1)}>
           − Sett
         </button>
-        <button className="btn small ghost" onClick={() => setExtra((e) => e + 1)}>
+        <button className="btn small ghost" onClick={() => onExtra(1)}>
           + Sett
         </button>
       </div>

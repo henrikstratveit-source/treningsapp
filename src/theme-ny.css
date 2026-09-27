@@ -1,5 +1,5 @@
 /*
- * Utseende «Ny». Legges oppå theme.css og gjelder bare når <html data-theme="ny">.
+ * Utseende «Ny» (lysere, blå aksent). Legges oppå theme.css og gjelder bare når <html data-theme="ny">.
  * Det klassiske utseendet (theme.css alene) er urørt – bytt i Innst. → Utseende.
  */
 
@@ -8,14 +8,14 @@
 .hero { display: none; }
 
 :root[data-theme='ny'] {
-  --bg: #0a0b0d;
-  --surface: #141619;
-  --surface-2: #1e2125;
-  --border: #25292e;
-  --text: #f2f4f5;
-  --muted: #8a9198;
-  --accent: #c5f04a;
-  --accent-ink: #0a0b0d;
+  --bg: #16191e;
+  --surface: #20242b;
+  --surface-2: #2b3038;
+  --border: #373d47;
+  --text: #f4f6f8;
+  --muted: #a7afb9;
+  --accent: #5aa7ff;
+  --accent-ink: #061528;
   --good: #5fd49a;
   --warn: #f2b13c;
   --bad: #f06a5f;
@@ -144,3 +144,6 @@
 :root[data-theme='ny'] details summary { color: var(--accent); }
 :root[data-theme='ny'] .form .stepper-value,
 :root[data-theme='ny'] .card > .set-inputs .stepper-value { background: var(--bg); border: 1px solid var(--border); }
+
+:root[data-theme='ny'] .compact-dot { color: var(--muted); }
+:root[data-theme='ny'] .exercise.focused { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }

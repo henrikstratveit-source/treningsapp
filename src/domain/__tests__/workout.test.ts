@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { seedExercises } from '../../data/seed/exercises'
 import { seedPrograms } from '../../data/seed/programs'
-import { buildPlan, isDumbbell, summarize } from '../workout'
+import { buildPlan, isDumbbell, nextOpenSlot, slotProgress, summarize } from '../workout'
 import { reps, set, workout } from './helpers'
 
 const exMap = new Map(seedExercises.map((e) => [e.id, e]))
@@ -26,6 +26,18 @@ describe('økt-hjelpere', () => {
     expect(item.next).toMatchObject({ kind: 'increase', weight: 35 })
     expect(item.record?.e1rm).toBe(true)
     expect(item.reps).toEqual([15, 15, 15])
+  })
+
+  it('fremdrift per plass og neste åpne plass', () => {
+    const w = workout('2026-09-01', [set(20, 8, { warmup: true }), ...reps(30, [12, 12, 12])])
+    w.plan.push({ slotIndex: 1, exerciseId: 'flyes', sets: 3, repMin: 10, repMax: 15 })
+    expect(slotProgress(w, w.plan[0])).toEqual({ logged: 3, rows: 3, done: true })
+    expect(slotProgress(w, w.plan[0], 1).done).toBe(false) // ekstra sett lagt til
+    expect(nextOpenSlot(w, {})).toBe(1)
+    expect(nextOpenSlot(w, { 0: 1 }, 0)).toBe(1)
+    expect(nextOpenSlot(w, { 0: 1 }, 1)).toBe(0) // ingen etter → første åpne
+    w.sets.push(...reps(20, [12, 12, 12]).map((s) => ({ ...s, exerciseId: 'flyes', slotIndex: 1 })))
+    expect(nextOpenSlot(w, {})).toBeNull()
   })
 
   it('sammendrag ser bort fra senere økter', () => {

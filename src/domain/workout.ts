@@ -13,6 +13,33 @@ export function buildPlan(session: ProgramSession): PlannedSlot[] {
   }))
 }
 
+export interface SlotProgress {
+  /** Loggede arbeidssett for øvelsen som står på plassen nå */
+  logged: number
+  /** Antall sett-rader: planlagt + ekstra, men aldri færre enn logget */
+  rows: number
+  done: boolean
+}
+
+/** Hvor langt en plass i økta har kommet. `extra` = sett lagt til (+) eller fjernet (−) i økta. */
+export function slotProgress(workout: WorkoutSession, slot: PlannedSlot, extra = 0): SlotProgress {
+  const logged = workout.sets.filter(
+    (s) => s.slotIndex === slot.slotIndex && s.exerciseId === slot.exerciseId && !s.warmup,
+  ).length
+  const rows = Math.max(slot.sets + extra, logged, 1)
+  return { logged, rows, done: logged >= rows }
+}
+
+/** Plassen som skal ha fokus: første uferdige etter `after`, ellers første uferdige, ellers null. */
+export function nextOpenSlot(
+  workout: WorkoutSession,
+  extras: Record<number, number>,
+  after = -1,
+): number | null {
+  const open = workout.plan.filter((p) => !slotProgress(workout, p, extras[p.slotIndex] ?? 0).done)
+  return (open.find((p) => p.slotIndex > after) ?? open[0])?.slotIndex ?? null
+}
+
 /** Manualøvelser logges per manual (SPEC 2). */
 export const isDumbbell = (exerciseId: string) => /(^|_)db(_|$)/.test(exerciseId)
 

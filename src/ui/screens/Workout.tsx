@@ -7,7 +7,8 @@ import { activeShortcut } from '../../domain/shortcut'
 import type { Exercise } from '../../domain/types'
 import { db } from '../../data/db'
 import { discardWorkout, finishWorkout } from '../../data/repo'
-import { ExerciseCard, scrollToNextExercise } from '../components/ExerciseCard'
+import { nextOpenSlot } from '../../domain/workout'
+import { ExerciseCard } from '../components/ExerciseCard'
 
 interface Props {
   workoutId: string
@@ -37,13 +38,23 @@ export function Workout({ workoutId, onFinished, onClose }: Props) {
     return { workout, program, exercises, settings, all }
   }, [workoutId])
   const minutes = useMinutesSince(data?.workout?.start)
-  // Påbegynt økt: start ved første uferdige øvelse.
-  const scrolled = useRef(false)
+
+  // Fokus: én øvelse vises åpen. null = automatisk (første uferdige).
+  const [focus, setFocus] = useState<number | null>(null)
+  const [extras, setExtras] = useState<Record<number, number>>({})
+  const current = data?.workout ? (focus ?? nextOpenSlot(data.workout, extras)) : null
+
+  // Rull til øvelsen i fokus når den skifter (og ved åpning av en påbegynt økt).
+  const shownFocus = useRef<number | null | undefined>(undefined)
   useEffect(() => {
-    if (scrolled.current || !data?.workout) return
-    scrolled.current = true
-    if (data.workout.sets.some((s) => !s.warmup)) scrollToNextExercise()
-  }, [data])
+    if (!data?.workout || shownFocus.current === current) return
+    const first = shownFocus.current === undefined
+    shownFocus.current = current
+    if (first && !data.workout.sets.some((x) => !x.warmup)) return
+    setTimeout(() => {
+      document.querySelector('.exercise.focused')?.scrollIntoView({ behavior: first ? 'auto' : 'smooth', block: 'start' })
+    }, 80)
+  }, [current, data])
 
   if (!data) return <p className="muted">Laster …</p>
   const { workout, program, exercises, settings, all } = data
@@ -122,10 +133,22 @@ export function Workout({ workoutId, onFinished, onClose }: Props) {
             technique={technique}
             firstCompound={slot.slotIndex === firstCompoundSlot}
             shortcut={activeShortcut(settings)}
+            focused={slot.slotIndex === current}
+            extra={extras[slot.slotIndex] ?? 0}
+            onExtra={(d) => setExtras((e) => ({ ...e, [slot.slotIndex]: (e[slot.slotIndex] ?? 0) + d }))}
+            onFocus={() => setFocus(slot.slotIndex)}
+            onBlur={() => setFocus(null)}
+            onCompleted={() => setFocus(null)}
           />
         )
       })}
 
+      {current === null && (
+        <section className="card highlight all-done">
+          <h2>Alle øvelsene er ferdige</h2>
+          <p className="muted small">Trykk på en øvelse over for å endre eller legge til sett.</p>
+        </section>
+      )}
       <button className="btn big primary" onClick={finish}>
         Avslutt økt
       </button>

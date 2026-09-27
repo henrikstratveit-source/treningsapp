@@ -232,3 +232,9 @@ Alle spørsmål er besvart. Neste steg er milepæl 1.
   på handlinger og fremgang, større tall, ikoner i fanelinja (`TabIcon.tsx`), «Neste økt»-kort på Hjem
   med øvelsene. Valget lagres i settings (`theme`) og speiles i localStorage så riktig utseende vises
   før databasen er lest. Git-tag `utseende-klassisk` peker på siste versjon før endringen.
+- **Justeringer (2026-09-27):** «Ny» er gjort lysere (bg #16191e, kort #20242b, grå tekst #a7afb9) med blå
+  aksent (#5aa7ff, mørk tekst på knapper). Innholdet holder avstand til status-linja/hakket i fullskjerm
+  (`env(safe-area-inset-*)`) i begge utseender. **Fokus i økta** (begge utseender): bare øvelsen i fokus
+  er åpen; de andre er smale linjer (✓ ferdig, ◐ påbegynt, ○ ikke startet – med sett × reps og forslått
+  vekt). Fokus = første uferdige, eller den du trykker på; etter siste sett går fokus til første
+  uferdige (også en du hoppet over). Logikk i `slotProgress`/`nextOpenSlot` (`domain/workout.ts`).
