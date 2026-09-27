@@ -11,6 +11,15 @@ import { unlockAudio } from '../sound'
 import { Goal } from './Goal'
 import { SetEditor, type SetValues } from './SetEditor'
 
+/** Rull til første uferdige øvelse etter `afterSlot` (ellers første uferdige). Venter på ny tegning. */
+export function scrollToNextExercise(afterSlot = -1) {
+  setTimeout(() => {
+    const open = [...document.querySelectorAll<HTMLElement>('.exercise[data-slot]:not(.is-done)')]
+    const next = open.find((el) => Number(el.dataset.slot) > afterSlot) ?? open[0]
+    next?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, 150)
+}
+
 interface Props {
   workout: WorkoutSession
   slot: PlannedSlot
@@ -39,6 +48,7 @@ export function ExerciseCard({
   const [extra, setExtra] = useState(0)
   const [editing, setEditing] = useState<string | null>(null)
   const [swapOpen, setSwapOpen] = useState(false)
+  const [expanded, setExpanded] = useState(false)
 
   const s = suggest(history, { step: exercise.step, repMin: slot.repMin, techniquePhase: technique })
   const mine = workout.sets.filter((x) => x.slotIndex === slot.slotIndex && x.exerciseId === exercise.id)
@@ -93,6 +103,10 @@ export function ExerciseCard({
     if (shortcut) window.location.href = shortcutUrl(shortcut, exercise.rest)
     await saved
     setEditing(null)
+    if (work.length + 1 >= rows) {
+      setExpanded(false)
+      scrollToNextExercise(slot.slotIndex)
+    }
   }
 
   async function logWarmup(weight: number, reps: number) {
@@ -110,13 +124,35 @@ export function ExerciseCard({
     })
   }
 
+  if (done && !expanded) {
+    const w = work[0]?.weight
+    const same = work.every((x) => x.weight === w)
+    return (
+      <button className="card exercise is-done compact" data-slot={slot.slotIndex} onClick={() => setExpanded(true)}>
+        <span className="compact-check">✓</span>
+        <span className="compact-text">
+          <strong>{exercise.name}</strong>
+          <span className="muted small">
+            {same ? `${kg(w)} × ${repsList(work.map((x) => x.reps))}` : work.map((x) => `${kg(x.weight)} × ${x.reps}`).join(', ')}
+          </span>
+        </span>
+        <span className="muted">›</span>
+      </button>
+    )
+  }
+
   return (
-    <section className={`card exercise ${done ? 'is-done' : ''}`}>
+    <section className={`card exercise ${done ? 'is-done' : ''}`} data-slot={slot.slotIndex}>
       <header className="ex-head">
         <h2>
           {exercise.name} {optional && <span className="tag">valgfri</span>}
           {done && <span className="tag good">ferdig</span>}
         </h2>
+        {done && (
+          <button className="btn small ghost" onClick={() => setExpanded(false)}>
+            Skjul
+          </button>
+        )}
         {swapOptions.length > 0 && (
           <button className="btn small ghost" onClick={() => setSwapOpen((o) => !o)}>
             Bytt

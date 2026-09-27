@@ -1,5 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { localDate } from '../../domain/dates'
 import { exerciseHistory } from '../../domain/progression'
 import { inTechniquePhase } from '../../domain/rir'
@@ -7,7 +7,7 @@ import { activeShortcut } from '../../domain/shortcut'
 import type { Exercise } from '../../domain/types'
 import { db } from '../../data/db'
 import { discardWorkout, finishWorkout } from '../../data/repo'
-import { ExerciseCard } from '../components/ExerciseCard'
+import { ExerciseCard, scrollToNextExercise } from '../components/ExerciseCard'
 
 interface Props {
   workoutId: string
@@ -37,6 +37,13 @@ export function Workout({ workoutId, onFinished, onClose }: Props) {
     return { workout, program, exercises, settings, all }
   }, [workoutId])
   const minutes = useMinutesSince(data?.workout?.start)
+  // Påbegynt økt: start ved første uferdige øvelse.
+  const scrolled = useRef(false)
+  useEffect(() => {
+    if (scrolled.current || !data?.workout) return
+    scrolled.current = true
+    if (data.workout.sets.some((s) => !s.warmup)) scrollToNextExercise()
+  }, [data])
 
   if (!data) return <p className="muted">Laster …</p>
   const { workout, program, exercises, settings, all } = data

@@ -223,3 +223,6 @@ Alle spørsmål er besvart. Neste steg er milepæl 1.
   (dobbel progresjon, SPEC 8) fra andre gang en øvelse gjøres. Gjort tydeligere: ny «mål»-boks øverst
   på hver øvelse (`Goal.tsx`) med stor vekt, mål-reps og kort forklaring (grønn = øk, gul = ned).
   Ingen nye treningsregler.
+- **Ferdige øvelser klappes sammen (2026-09-27):** når alle sett-radene er logget blir øvelsen en smal
+  linje («✓ navn · vekt × reps»); trykk for å åpne igjen, «Skjul» for å lukke. Etter siste sett ruller
+  appen til neste uferdige øvelse, og en påbegynt økt åpnes ved første uferdige øvelse.
